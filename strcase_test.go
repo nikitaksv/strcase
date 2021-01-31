@@ -21,6 +21,43 @@ import (
 	"testing"
 )
 
+func BenchmarkToCamelCase(b *testing.B) {
+	b.Run("Foo Bar", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ToCamelCase("Foo Bar")
+		}
+	})
+}
+
+func BenchmarkToPascalCase(b *testing.B) {
+	b.Run("Foo Bar", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ToPascalCase("Foo Bar")
+		}
+	})
+}
+func BenchmarkToDotCase(b *testing.B) {
+	b.Run("Foo Bar", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ToDotCase("Foo Bar")
+		}
+	})
+}
+func BenchmarkToSnakeCase(b *testing.B) {
+	b.Run("Foo Bar", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ToSnakeCase("Foo Bar")
+		}
+	})
+}
+func BenchmarkToKebabCase(b *testing.B) {
+	b.Run("Foo Bar", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ToKebabCase("Foo Bar")
+		}
+	})
+}
+
 func TestToCamelCase(t *testing.T) {
 	type args struct {
 		str string
@@ -281,7 +318,7 @@ func TestParseString(t *testing.T) {
 	type args struct {
 		str string
 	}
-	want := []string{"field", "name"}
+
 	tests := []struct {
 		name string
 		args args
@@ -293,49 +330,19 @@ func TestParseString(t *testing.T) {
 			want: []string{"field", "name", "field", "name"},
 		},
 		{
-			name: "space(lower)",
-			args: args{str: "field name"},
-			want: want,
+			name: "digit",
+			args: args{str: "field001"},
+			want: []string{"field001"},
 		},
 		{
-			name: "space(upper)",
-			args: args{str: "FIELD NAME"},
-			want: want,
+			name: "digit2",
+			args: args{str: "field 001"},
+			want: []string{"field", "001"},
 		},
 		{
-			name: "snake_case(lower)",
-			args: args{str: "field_name"},
-			want: want,
-		},
-		{
-			name: "snake_case(upper)",
-			args: args{str: "FIELD_NAME"},
-			want: want,
-		},
-		{
-			name: "kebab-case(lower)",
-			args: args{str: "field-name"},
-			want: want,
-		},
-		{
-			name: "kebab-case(upper)",
-			args: args{str: "FIELD-NAME"},
-			want: want,
-		},
-		{
-			name: "PascalCase",
-			args: args{str: "FieldName"},
-			want: want,
-		},
-		{
-			name: "camelCase",
-			args: args{str: "fieldName"},
-			want: want,
-		},
-		{
-			name: "dotCase",
-			args: args{str: "field.Name"},
-			want: want,
+			name: "space",
+			args: args{str: " field name "},
+			want: []string{"field", "name"},
 		},
 	}
 	for _, tt := range tests {
