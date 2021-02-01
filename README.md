@@ -63,3 +63,7 @@ func main() {
 | `ToDotCaseRunes(rs)`              | `field.name`               |
 | `ParseString(s)`                  | `[]string{"field","name"}` |
 | `ParseRunes(rs)`                  | `[][]rune{"field","name"}` |
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnikitaksv%2Fstrcase.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnikitaksv%2Fstrcase?ref=badge_large)
