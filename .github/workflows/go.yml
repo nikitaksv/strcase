@@ -21,13 +21,24 @@ jobs:
     - name: Build
       run: go build -v ./...
       
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v1.2.1
-
     - name: Test
       run: go test -v ./...
       
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.1.2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          
+  coveralls:
+    name: Coveralls GitHub Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
