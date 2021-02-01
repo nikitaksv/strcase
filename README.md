@@ -1,6 +1,7 @@
 # strcase
 
 [![Godoc Reference](https://godoc.org/github.com/nikitaksv/strcase?status.svg)](http://godoc.org/github.com/nikitaksv/strcase)
+[![Coverage Status](https://coveralls.io/repos/github/nikitaksv/strcase/badge.svg?branch=main)](https://coveralls.io/github/nikitaksv/strcase?branch=main)
 
 Package strcase converts strings or runes to various cases
 
