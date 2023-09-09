@@ -108,6 +108,11 @@ func TestToCamelCase(t *testing.T) {
 			want: "fieldName",
 		},
 		{
+			name: "camelCase",
+			args: args{str: "fieldId"},
+			want: "fieldId",
+		},
+		{
 			name: "dot",
 			args: args{str: "field.Name"},
 			want: "fieldName",
@@ -415,5 +420,187 @@ func TestToDotCase(t *testing.T) {
 				t.Errorf("ToDotCase() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestToMergeCase(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "space(lower)",
+			args: args{str: "field name"},
+			want: "fieldname",
+		},
+		{
+			name: "space(upper)",
+			args: args{str: "FIELD NAME"},
+			want: "fieldname",
+		},
+		{
+			name: "snake_case(lower)",
+			args: args{str: "field_name"},
+			want: "fieldname",
+		},
+		{
+			name: "snake_case(upper)",
+			args: args{str: "FIELD_NAME"},
+			want: "fieldname",
+		},
+		{
+			name: "kebab-case(lower)",
+			args: args{str: "field-name"},
+			want: "fieldname",
+		},
+		{
+			name: "kebab-case(upper)",
+			args: args{str: "FIELD-NAME"},
+			want: "fieldname",
+		},
+		{
+			name: "PascalCase",
+			args: args{str: "FieldName"},
+			want: "fieldname",
+		},
+		{
+			name: "camelCase",
+			args: args{str: "fieldName"},
+			want: "fieldname",
+		},
+		{
+			name: "dotCase",
+			args: args{str: "field.Name"},
+			want: "fieldname",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToMergeCase(tt.args.str); got != tt.want {
+				t.Errorf("ToMergeCase() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+func TestToMergeCaseAcronym(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name string
+		args args
+		f    func(string) string
+		want string
+	}{
+		{
+			name: "mergecase",
+			args: args{str: "field name id"},
+			f:    ToMergeCaseAcronym,
+			want: "fieldnameID",
+		},
+		{
+			name: "dot.case",
+			args: args{str: "field id"},
+			f:    ToDotCaseAcronym,
+			want: "field.ID",
+		},
+		{
+			name: "kebab-case",
+			args: args{str: "orderId"},
+			f:    ToKebabCaseAcronym,
+			want: "order-ID",
+		},
+		{
+			name: "snake_case",
+			args: args{str: "order_id"},
+			f:    ToSnakeCaseAcronym,
+			want: "order_ID",
+		},
+		{
+			name: "camelCase",
+			args: args{str: "order_id"},
+			f:    ToCamelCaseAcronym,
+			want: "orderID",
+		},
+		{
+			name: "PascalCase",
+			args: args{str: "order_id"},
+			f:    ToPascalCaseAcronym,
+			want: "OrderID",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.f(tt.args.str); got != tt.want {
+				t.Errorf("ToMergeCaseAcronym() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestReplaceAcronyms(t *testing.T) {
+	words := []string{"order", "id"}
+	want := []string{"order", "ID"}
+	got := ReplaceAcronyms(words)
+	if !reflect.DeepEqual(words, want) {
+		t.Errorf("ReplaceAcronyms() = %v, want %v", got, want)
+	}
+}
+
+func TestReplaceAcronym(t *testing.T) {
+	word := "id"
+	want := "ID"
+	got, found := ReplaceAcronym(word)
+	if got != want || !found {
+		t.Errorf("ReplaceAcronym() = %v (%t), want %v (true)", got, found, want)
+	}
+}
+
+func TestAddAcronym(t *testing.T) {
+	AddAcronym("KKK", "kKk")
+	found := false
+	acrMap.Range(func(key, _ interface{}) bool {
+		if key.(string) == "kKk" {
+			found = true
+			return false
+		}
+		return true
+	})
+
+	if !found {
+		t.Errorf("not found added acronym in map")
+	}
+}
+
+func TestIsLower(t *testing.T) {
+	w := "qwerTy"
+	if isLower([]rune(w)) {
+		t.Errorf("word is not lower, but isLower() return true")
+	}
+}
+
+// TestSetAcronyms set in global map. Call the func last
+func TestSetAcronyms(t *testing.T) {
+	acrs := map[string][]string{
+		"MY":  {"my", "My"},
+		"CAT": {"cat", "Cat"},
+	}
+
+	SetAcronyms(acrs)
+
+	varsCnt := len(acrs) * 2
+
+	total := 0
+	acrMap.Range(func(key, _ interface{}) bool {
+		total++
+		return true
+	})
+
+	if varsCnt != total {
+		t.Errorf("variant count not equal map variant count: %d != %d", varsCnt, total)
 	}
 }

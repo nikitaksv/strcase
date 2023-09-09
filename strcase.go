@@ -26,57 +26,127 @@ const (
 	SeparatorDot        = '.'
 )
 
-// DotCase ex. dot.case
+// ToMergeCase MergeCase ex. mergecase
+func ToMergeCase(str string) string {
+	return string(ToMergeCaseRunes([]rune(str)))
+}
+
+// ToMergeCaseAcronym Replace acronym in string. Ex. mergecase
+func ToMergeCaseAcronym(str string) string {
+	return string(ToMergeCaseAcronymRunes([]rune(str)))
+}
+
+// ToMergeCaseRunes MergeCase ex. mergecaseID
+func ToMergeCaseRunes(runes []rune) []rune {
+	return concatRuneWords(ParseRunes(runes), nil)
+}
+
+// ToMergeCaseAcronymRunes Replace acronym in slice of runes. Ex. mergecaseID
+func ToMergeCaseAcronymRunes(runes []rune) []rune {
+	return concatRuneWords(ReplaceAcronymsRunes(ParseRunes(runes)), nil)
+}
+
+// ToDotCase DotCase ex. dot.case
 func ToDotCase(str string) string {
 	return string(ToDotCaseRunes([]rune(str)))
 }
 
-// DotCase ex. dot.case
+// ToDotCaseAcronym Replace acronym in string. Ex. dot.case.ID
+func ToDotCaseAcronym(str string) string {
+	return string(ToDotCaseAcronymRunes([]rune(str)))
+}
+
+// ToDotCaseRunes DotCase ex. dot.case
 func ToDotCaseRunes(runes []rune) []rune {
 	return concatRuneWords(ParseRunes(runes), []rune{SeparatorDot})
 }
 
-// KebabCase ex. kebab-case
+// ToDotCaseAcronymRunes Replace acronym in slice of runes. Ex. dot.case.ID
+func ToDotCaseAcronymRunes(runes []rune) []rune {
+	return concatRuneWords(ReplaceAcronymsRunes(ParseRunes(runes)), []rune{SeparatorDot})
+}
+
+// ToKebabCase KebabCase ex. kebab-case
 func ToKebabCase(str string) string {
 	return string(ToKebabCaseRunes([]rune(str)))
 }
 
-// KebabCase ex. kebab-case
+// ToKebabCaseAcronym Replace acronym in string. Ex. kebab-case-ID
+func ToKebabCaseAcronym(str string) string {
+	return string(ToKebabCaseAcronymRunes([]rune(str)))
+}
+
+// ToKebabCaseRunes KebabCase ex. kebab-case
 func ToKebabCaseRunes(runes []rune) []rune {
 	return concatRuneWords(ParseRunes(runes), []rune{SeparatorDash})
 }
 
-// SnakeCase ex. snake_case
+// ToKebabCaseAcronymRunes Replace acronym in slice of runes. Ex. kebab-case-ID
+func ToKebabCaseAcronymRunes(runes []rune) []rune {
+	return concatRuneWords(ReplaceAcronymsRunes(ParseRunes(runes)), []rune{SeparatorDash})
+}
+
+// ToSnakeCase SnakeCase ex. snake_case
 func ToSnakeCase(str string) string {
 	return string(ToSnakeCaseRunes([]rune(str)))
 }
 
-// SnakeCase ex. snake_case
+// ToSnakeCaseAcronym Replace acronym in string. Ex. snake_case_ID
+func ToSnakeCaseAcronym(str string) string {
+	return string(ToSnakeCaseAcronymRunes([]rune(str)))
+}
+
+// ToSnakeCaseRunes SnakeCase ex. snake_case
 func ToSnakeCaseRunes(runes []rune) []rune {
 	return concatRuneWords(ParseRunes(runes), []rune{SeparatorUnderscore})
 }
 
-// CamelCase ex. camelCase
+// ToSnakeCaseAcronymRunes Replace acronym in slice of runes. Ex. snake_case_ID
+func ToSnakeCaseAcronymRunes(runes []rune) []rune {
+	return concatRuneWords(ReplaceAcronymsRunes(ParseRunes(runes)), []rune{SeparatorUnderscore})
+}
+
+// ToCamelCase CamelCase ex. camelCase
 func ToCamelCase(str string) string {
 	return string(ToCamelCaseRunes([]rune(str)))
 }
 
-// CamelCase ex. camelCase
-func ToCamelCaseRunes(runes []rune) []rune {
-	return camelCase(runes, false)
+// ToCamelCaseAcronym Replace acronym in string. Ex. camelCaseID
+func ToCamelCaseAcronym(str string) string {
+	return string(ToCamelCaseAcronymRunes([]rune(str)))
 }
 
-// PascalCase ex. PascalCase
+// ToCamelCaseRunes CamelCase ex. camelCase
+func ToCamelCaseRunes(runes []rune) []rune {
+	return camelCase(runes, false, false)
+}
+
+// ToCamelCaseAcronymRunes Replace acronym in slice of runes. Ex. camelCaseID
+func ToCamelCaseAcronymRunes(runes []rune) []rune {
+	return camelCase(runes, false, true)
+}
+
+// ToPascalCase PascalCase ex. PascalCase
 func ToPascalCase(str string) string {
 	return string(ToPascalCaseRunes([]rune(str)))
 }
 
-// PascalCase ex. PascalCase
-func ToPascalCaseRunes(runes []rune) []rune {
-	return camelCase(runes, true)
+// ToPascalCaseAcronym Replace acronym in string. Ex. PascalCaseID
+func ToPascalCaseAcronym(str string) string {
+	return string(ToPascalCaseAcronymRunes([]rune(str)))
 }
 
-// Splits the input line into words.
+// ToPascalCaseRunes PascalCase ex. PascalCase
+func ToPascalCaseRunes(runes []rune) []rune {
+	return camelCase(runes, true, false)
+}
+
+// ToPascalCaseAcronymRunes Replace acronym in slice of runes. Ex. PascalCaseID
+func ToPascalCaseAcronymRunes(runes []rune) []rune {
+	return camelCase(runes, true, true)
+}
+
+// ParseString Splits the input line into words.
 // Delimiters: "(unicode space)","_", "-",".","A-Z (Upper Letter second word)"
 func ParseString(str string) []string {
 	var words []string
@@ -86,7 +156,7 @@ func ParseString(str string) []string {
 	return words
 }
 
-// Splits the input line into words
+// ParseRunes Splits the input line into words
 func ParseRunes(rs []rune) [][]rune {
 	var words [][]rune
 
@@ -114,10 +184,12 @@ func ParseRunes(rs []rune) [][]rune {
 	return words
 }
 
-func camelCase(runes []rune, upper bool) []rune {
-	var camelCase []rune
+func camelCase(runes []rune, upper bool, replaceAcronym bool) []rune {
+	camelCase := make([]rune, 0, len(runes))
 	for i, rs := range ParseRunes(runes) {
-		if i == 0 {
+		if nRs, ok := ReplaceAcronymRunes(rs); replaceAcronym && ok {
+			rs = nRs
+		} else if i == 0 {
 			if upper {
 				rs[0] = unicode.ToUpper(rs[0])
 			} else {
@@ -164,12 +236,52 @@ func toLowerRunes(runes []rune) []rune {
 
 func concatRuneWords(runeWords [][]rune, sep []rune) []rune {
 	var word []rune
-	for _, rs := range runeWords {
+	for _, rw := range runeWords {
 		if len(word) > 0 {
 			word = append(word, sep...)
 		}
-		word = append(word, rs...)
+		word = append(word, rw...)
 	}
 
 	return word
+}
+
+func ReplaceAcronyms(words []string) []string {
+	for i, w := range words {
+		nW, _ := ReplaceAcronymRunes([]rune(w))
+		words[i] = string(nW)
+	}
+	return words
+}
+
+func ReplaceAcronym(word string) (string, bool) {
+	rW, found := ReplaceAcronymRunes([]rune(word))
+	return string(rW), found
+}
+
+func ReplaceAcronymsRunes(runeWords [][]rune) [][]rune {
+	for i, rw := range runeWords {
+		runeWords[i], _ = ReplaceAcronymRunes(rw)
+	}
+	return runeWords
+}
+
+func ReplaceAcronymRunes(runeWord []rune) ([]rune, bool) {
+	if acr, ok := acrMap.Load(string(runeWord)); ok {
+		if acr, ok := acr.([]rune); ok {
+			return acr, true
+		}
+	} else if !isLower(runeWord) {
+		return ReplaceAcronymRunes(toLowerRunes(runeWord))
+	}
+	return runeWord, false
+}
+
+func isLower(runeWord []rune) bool {
+	for _, r := range runeWord {
+		if !unicode.IsLower(r) {
+			return false
+		}
+	}
+	return true
 }
