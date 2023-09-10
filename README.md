@@ -13,7 +13,7 @@ go get -u github.com/nikitaksv/strcase
 ```
 
 ## Usage
- 
+
 ```go
 package main
 
@@ -44,6 +44,15 @@ func main() {
 	dot := strcase.ToDotCase("oneWord two-word THREE_WORD FourWord")
 	fmt.Println(dot) // out: one.word.two.word.three.word.four.word
 
+	// Ex. mergecase
+	merge := strcase.ToDotCase("oneWord two-word THREE_WORD FourWord")
+	fmt.Println(merge) // out: onewordtwowordthreewordfourword
+
+	// Add GUID acronym
+	strcase.AddAcronym("GUID", "Guid", "GuId")
+	// Convert text to camelCase and replace Guid to acronym GUID
+	camelAcronym := strcase.ToCamelCaseAcronym("my Order Guid")
+	fmt.Println(camelAcronym) // out: myOrderGUID
 }
 ```
 
@@ -51,19 +60,30 @@ func main() {
 
 | Function                          | Output                     |
 |-----------------------------------|----------------------------|
-| `ToSnakeCase(s)`                  | `field_name`               |
-| `ToSnakeCaseRunes(rs)`            | `field_name`               |
-| `ToCamelCase(s)`                  | `fieldName`                |
-| `ToCamelCaseRunes(rs)`            | `fieldName`                |
-| `ToKebabCase(s)`                  | `field-name`               |
-| `ToKebabCaseRunes(rs)`            | `field-name`               |
-| `ToPascalCase(s)`                 | `FieldName`                |
-| `ToPascalCaseRunes(rs)`           | `FieldName`                |
-| `ToDotCase(s)`                    | `field.name`               |
-| `ToDotCaseRunes(rs)`              | `field.name`               |
-| `ParseString(s)`                  | `[]string{"field","name"}` |
-| `ParseRunes(rs)`                  | `[][]rune{"field","name"}` |
-
+| `ToSnakeCase(string)`             | `field_name`               |
+| `ToSnakeCaseAcronym(string)`      | `field_ID`                 |
+| `ToSnakeCaseRunes(runes)`         | `field_name`               |
+| `ToCamelCase(string)`             | `fieldName`                |
+| `ToCamelCaseAcronym(string)`      | `fieldID`                  |
+| `ToCamelCaseRunes(runes)`         | `fieldName`                |
+| `ToKebabCase(string)`             | `field-name`               |
+| `ToKebabCaseAcronym(string)`      | `field-name-ID`            |
+| `ToKebabCaseRunes(runes)`         | `field-name`               |
+| `ToPascalCase(string)`            | `FieldName`                |
+| `ToPascalCaseAcronym(string)`     | `FieldNameID`              |
+| `ToPascalCaseRunes(runes)`        | `FieldName`                |
+| `ToDotCase(string)`               | `field.name`               |
+| `ToDotCaseAcronym(string)`        | `field.name.ID`            |
+| `ToDotCaseRunes(runes)`           | `field.name`               |
+| `ToMergeCase(string)`             | `fieldname`                |
+| `ToMergeCaseAcronym(string)`      | `fieldnameID`              |
+| `ToMergeCaseRunes(runes)`         | `fieldname`                |
+| `ParseString(string)`             | `[]string{"field","name"}` |
+| `ParseRunes(runes)`               | `[][]rune{"field","name"}` |
+| `AddAcronym(string)`              | void                       |
+| `SetAcronym(map[string][]string)` | void                       |
+| `ReplaceAcronym(string)`          | `ID`                       |
 
 ## License
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnikitaksv%2Fstrcase.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnikitaksv%2Fstrcase?ref=badge_large)
