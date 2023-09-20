@@ -187,7 +187,13 @@ func ParseRunes(rs []rune) [][]rune {
 func camelCase(runes []rune, upper bool, replaceAcronym bool) []rune {
 	camelCase := make([]rune, 0, len(runes))
 	for i, rs := range ParseRunes(runes) {
-		if nRs, ok := ReplaceAcronymRunes(rs); replaceAcronym && ok {
+		var nRs []rune
+		var foundReplace bool
+		if replaceAcronym {
+			nRs, foundReplace = ReplaceAcronymRunes(rs)
+		}
+
+		if foundReplace {
 			rs = nRs
 		} else if i == 0 {
 			if upper {
@@ -267,12 +273,16 @@ func ReplaceAcronymsRunes(runeWords [][]rune) [][]rune {
 }
 
 func ReplaceAcronymRunes(runeWord []rune) ([]rune, bool) {
+	return replaceAcronymRunes(runeWord, false)
+}
+
+func replaceAcronymRunes(runeWord []rune, exit bool) ([]rune, bool) {
 	if acr, ok := acrMap.Load(string(runeWord)); ok {
 		if acr, ok := acr.([]rune); ok {
 			return acr, true
 		}
-	} else if !isLower(runeWord) {
-		return ReplaceAcronymRunes(toLowerRunes(runeWord))
+	} else if !exit {
+		return replaceAcronymRunes(toLowerRunes(runeWord), true)
 	}
 	return runeWord, false
 }
